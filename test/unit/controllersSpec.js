@@ -3,10 +3,10 @@
 /* jasmine specs for controllers go here */
 
 describe('controllers', function(){
-  beforeEach(module('myApp.controllers'));
+  var controllers = module('todoApp.controllers');
+  beforeEach(controllers);
 
-
-  it('should ....', inject(function() {
+  it('should ....', inject(function($controller) {
     //spec body
   }));
 
