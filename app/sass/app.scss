@@ -4,14 +4,61 @@
 @import "bootstrap-responsive";
 @import "jquery_ui_no_theme";
 
-body {
-	background: orange;
+html {
+  background-color: #F3F1CC;
+  background-image: -moz-linear-gradient(#F3F1CC, #FEBF01);
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FEBF01), to(#F3F1CC));
+  background-image: -webkit-linear-gradient(#F3F1CC, #FEBF01);
+  background-image: -o-linear-gradient(#F3F1CC, #FEBF01);
 }
 
-h1, h2 { text-align: center; }
+body {
+	background: none;
+	text-align: center;
+}
 
-.todo-widget { margin: 2em 0; }
-.todo-widget-header { background-color: blue; color: white; }
+h1, h2 {
+	text-transform: uppercase;
+	padding: 0;
+}
+
+h1 {
+	font-size: 28px;
+	line-height: 100%;
+	margin: 50px 0 0 0;
+	letter-spacing: 1px;
+}
+
+h2 {
+	margin-top: 0;
+	font-size: 16px;
+	font-weight: lighter;
+}
+
+.todo-widget {
+	margin: 2em auto;
+	width: 700px;
+	border: solid 1px gray;
+	border-top-color: black;
+	border-radius: 0 0 20px 20px;
+	overflow: hidden;
+}
+
+.todo-widget-header {
+	display: table;
+	background-color: #1F2AF0;
+	color: white;
+	height: 50px;
+	width: 100%;
+
+	div {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	.title { text-align: left; }
+	.action { width: 3em; }
+}
+
 .todo-widget-add {
 	width: 100%;
 }
@@ -26,4 +73,10 @@ h1, h2 { text-align: center; }
 	margin-top: 3em;
 	text-align: center;
 	color: white;
+}
+
+@media only screen and (max-width: 700px) {
+	.todo-widget {
+		width: 95%;
+	}
 }
