@@ -5,11 +5,9 @@
 @import "jquery_ui_no_theme";
 
 html {
-  background-color: #F3F1CC;
-  background-image: -moz-linear-gradient(#F3F1CC, #FEBF01);
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FEBF01), to(#F3F1CC));
-  background-image: -webkit-linear-gradient(#F3F1CC, #FEBF01);
-  background-image: -o-linear-gradient(#F3F1CC, #FEBF01);
+  background-color: #323232;
+  background-image: url(img/background.png);
+  background-repeat: repeat-x;
 }
 
 body {
@@ -38,29 +36,59 @@ h2 {
 .todo-widget {
 	margin: 2em auto;
 	width: 700px;
-	border: solid 1px gray;
-	border-top-color: black;
 	border-radius: 0 0 20px 20px;
 	overflow: hidden;
+
+	& > div {
+		display: table;
+	}
 }
 
 .todo-widget-header {
-	display: table;
-	background-color: #1F2AF0;
-	color: white;
-	height: 50px;
 	width: 100%;
+	height: 50px;
 
-	div {
+    border: solid 1px #315589;
+	background-color: #446FAE;
+	background-image: url(img/cloth.png);
+    background-repeat: repeat-x;
+	color: white;
+
+	div, .icon {
 		display: table-cell;
-		vertical-align: middle;
+	    vertical-align: middle;
 	}
+	.icon {
+	    width: 3em;
+	}
+
+    .icon:last-child {
+        border-left: solid 1px #5284bf;
+    }
+
 	.title { text-align: left; }
-	.action { width: 3em; }
 }
 
 .todo-widget-add {
+	background-image: url(img/metal.png);
+    background-repeat: repeat-x;
 	width: 100%;
+	height: 49px;
+
+	div, .icon {
+		display: table-cell;
+		vertical-align: middle;
+		&, input, button {
+			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+			box-sizing: border-box;    
+		}
+	}
+
+	.icon { width: 3em; }
+	input { width: 100%; }
+	button { width: 5em; }
+
 }
 .todo-widget-list {
 	background-color: silver;
@@ -74,6 +102,15 @@ h2 {
 	text-align: center;
 	color: white;
 }
+
+.icon {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+.icon.calendar { background-image: url(img/calendar.png); }
+.icon.pencil { background-image: url(img/pencil.png); }
+.icon.trash { background-image: url(img/trash.png); }
 
 @media only screen and (max-width: 700px) {
 	.todo-widget {
