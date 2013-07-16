@@ -9,18 +9,20 @@
         <a href="javascript:void(0)" class="icon trash"></a>
     </div>
     <div class="todo-widget-add">
-        <a href="javascript:void(0)" class="icon add">[Add]</a>
-        <div class="btn-group">
-            <input type="text" placeholder="Start typing here to create a task" />
-            <button class="btn add-on btn-success">Add Task</button>
-        </div>
+        <a href="javascript:void(0)" class="icon add"></a>
+        <input type="text" placeholder="Start typing here to create a task" />
+        <button class="btn add-on btn-success">Add Task</button>
     </div>
     <table class="todo-widget-list">
     <tbody>
         <tr ng-repeat="task in project.tasks">
-            <td style="width: 2em;"><input type="checkbox" /></td>
-            <td>{{task.text}}</td>
-            <td style="width: 15em;">[Drag] | [Edit] | [Delete]</td>
+            <td class="checkbox"><input type="checkbox" /></td>
+            <td class="text">{{task.text}}</td>
+            <td class="actions">
+                <a href="javascript:void(0)" class="icon drag"></a> |
+                <a href="javascript:void(0)" class="icon pencil"></a> |
+                <a href="javascript:void(0)" class="icon trash"></a>
+            </td>
         </tr>
     </tbody>
     </table>

@@ -58,6 +58,7 @@ h2 {
 		display: table-cell;
 	    vertical-align: middle;
 	}
+
 	.icon {
 	    width: 3em;
 	}
@@ -70,32 +71,97 @@ h2 {
 }
 
 .todo-widget-add {
+    position: relative;
 	background-image: url(img/metal.png);
     background-repeat: repeat-x;
 	width: 100%;
 	height: 49px;
+    border-bottom: solid 1px #aaa;
 
-	div, .icon {
-		display: table-cell;
-		vertical-align: middle;
-		&, input, button {
-			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-			box-sizing: border-box;    
-		}
-	}
+    & > * {
+        position: absolute;
+        top: 8px;
+    }
+    
+    input, .btn, .icon {
+        //height: 28px;
+    }
 
-	.icon { width: 3em; }
-	input { width: 100%; }
-	button { width: 5em; }
+    .btn { 
+        right: 11px;
+        width: 106px;
+        border-radius: 0 4px 4px 0;
+    }
 
+	.icon {
+        left: 0;
+        top: 0;
+        width: 51px;
+        height: 100%;
+    }
+
+	input {
+        left: 51px;
+        right: 115px;
+        width: auto;
+        border-radius: 0;
+    }
+
+	button {  }
 }
+
 .todo-widget-list {
-	background-color: silver;
+    color: #999999;
+	background-color: #fff;
 	width: 100%;
+    
+    td {
+        height: 48px;
+        border-bottom: solid 1px #e7ebea;
+        font-size: 0.9em;
+        line-height: 1.1em;
+        font-weight: bold;
+    }
+
+    .checkbox {
+        width: 45px;
+        border-right: solid 1px #efdadf;  
+        text-align: center;
+    }
+
+    input[type=checkbox] {
+        float: none;
+    }
+
+    .text {
+        padding-left: 17px;
+        border-left: solid 1px #efdadf;  
+    }
+
+    .actions {
+        width: 119px;
+        font-size: 50%;
+        text-align: center;
+        border-left: solid 1px #e7ebea;
+    }
+
+    tr:last-child {
+        td {
+            height: 70px;
+        }
+    }
+    tr:hover {
+        td {
+            background-color: #fcfed5;
+        }
+    }
 }
+
 .todo-add-list {
 	text-align: center;
+    .btn-primary {
+        background-image: url(img/cloth.png);
+    }
 }
 .copyright {
 	margin-top: 3em;
@@ -111,6 +177,7 @@ h2 {
 .icon.calendar { background-image: url(img/calendar.png); }
 .icon.pencil { background-image: url(img/pencil.png); }
 .icon.trash { background-image: url(img/trash.png); }
+.icon.add { background-image: url(img/plus.png); }
 
 @media only screen and (max-width: 700px) {
 	.todo-widget {
