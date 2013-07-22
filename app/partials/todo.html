@@ -16,12 +16,16 @@
     <table class="todo-widget-list">
     <tbody>
         <tr ng-repeat="task in list.tasks">
-            <td class="checkbox"><input type="checkbox" /></td>
+            <td class="checkbox">
+                <input type="checkbox" />
+            </td>
             <td class="text">{{task.text}}</td>
             <td class="actions">
-                <a href="javascript:void(0)" class="icon drag"></a> |
-                <a href="javascript:void(0)" class="icon pencil"></a> |
-                <a href="javascript:void(0)" class="icon trash"></a>
+                <div class="actions-inner">
+                    <a href="javascript:void(0)" class="icon drag-small"></a> |
+                    <a href="javascript:void(0)" class="icon pencil-small"></a> |
+                    <a href="javascript:void(0)" class="icon trash-small" ng-click="list.removeAt($index)"></a>
+                </div>
             </td>
         </tr>
     </tbody>

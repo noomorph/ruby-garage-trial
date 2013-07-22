@@ -17,6 +17,15 @@ describe('TodoController tests', function() {
         expect(scope.lists.length).toBe(2);
     });
 
+    it("each list has id, name and tasks", function () {
+        angular.forEach(scope.lists, function (list) {
+            expect(list instanceof TodoList).toBe(true);
+            expect(list.id).toBeDefined();
+            expect(list.name).toBeDefined();
+            expect(list.tasks).toBeDefined();
+        });
+    });
+
     it("new list is empty", function () {
         var list = new TodoList();
         expect(list.id).toBeUndefined();
@@ -39,13 +48,11 @@ describe('TodoController tests', function() {
         expect(list.add.text).toBe('');
     });
 
-    it("each project has id, name and tasks", function () {
-        angular.forEach(scope.lists, function (list) {
-            expect(list instanceof TodoList).toBe(true);
-            expect(list.id).toBeDefined();
-            expect(list.name).toBeDefined();
-            expect(list.tasks).toBeDefined();
-        });
+    it("after click on remove task, it is removed", function () {
+        var list = new TodoList();
+        list.tasks.push({ text: 'Sample task' });
+        list.removeAt(0);
+        expect(list.tasks.length).toBe(0);
     });
 });
 

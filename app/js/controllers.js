@@ -17,6 +17,14 @@ function TodoList (config) {
             }
         }
     };
+
+    this.removeAt = function (index) {
+        if (index >= 0 && index < me.tasks.length) {
+            me.tasks.splice(index, 1);
+            return true;
+        }
+        return false;
+    };
 }
 
 (function () {

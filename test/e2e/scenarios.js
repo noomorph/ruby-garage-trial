@@ -21,11 +21,18 @@ describe('todo app', function() {
             expect(element('[ng-view] .todo-widget-add button').attr('disabled'))
                 .toBe('disabled');
         });
-        it('should disable add task button', function() {
+        it('should enable add task button when text is not empty', function() {
             var input = element('[ng-view] .todo-widget-add input');
             var button = element('[ng-view] .todo-widget-add button');
             input.val('New task');
             // expect(button.attr('disabled')).toBe('disabled');
+        });
+        it('should delete task after click on delete button', function() {
+            var items = element('h2+form tbody tr');
+            expect(items.count()).toBe(4);
+            element('h2+form tbody tr:first-child .trash-small').click();
+            debugger;
+            expect(items.count()).toBe(3);
         });
     });
 });
