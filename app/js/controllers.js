@@ -1,30 +1,55 @@
 /* global angular */
 
+function TodoItem (config) {
+    _.extend(this, config);
+    _.defaults(this, {
+        text: '',
+        editable: false
+    });
+}
+
 function TodoList (config) {
-    var me = this;
-    config = config || {};
-    this.id = config.id;
-    this.name = config.name || '';
-    this.tasks = config.tasks || [];
+    _.extend(this, config);
+    _.defaults(this, {
+        name: '',
+        tasks: []
+    });
+    this.tasks = _.map(this.tasks, function (config) {
+        return new TodoItem(config);
+    });
 
     this.add = { 
         text: '',
-        do: function () {
-            var text = me.add.text;
+        do: _.bind(function () {
+            var text = this.add.text;
             if (text) {
-                me.tasks.unshift({ text: text });
-                me.add.text = '';
+                this.tasks.unshift(new TodoItem({ text: text }));
+                this.add.text = '';
             }
-        }
+        }, this)
     };
 
-    this.removeAt = function (index) {
-        if (index >= 0 && index < me.tasks.length) {
-            me.tasks.splice(index, 1);
+    this.cancelEdit = _.bind(function () {
+        _.each(this.tasks, function (task) {
+            task.editable = false;
+        });
+    }, this);
+
+    this.edit = _.bind(function (index) {
+        this.cancelEdit();
+        var task = this.tasks[index];
+        if (task) {
+            task.editable = true;
+        }
+    }, this);
+
+    this.removeAt = _.bind(function (index) {
+        if (index >= 0 && index < this.tasks.length) {
+            this.tasks.splice(index, 1);
             return true;
         }
         return false;
-    };
+    }, this);
 }
 
 (function () {

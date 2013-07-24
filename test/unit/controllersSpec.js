@@ -54,6 +54,35 @@ describe('TodoController tests', function() {
         list.removeAt(0);
         expect(list.tasks.length).toBe(0);
     });
+
+    it("should mark item as editable after button click", function () {
+        var list = new TodoList();
+        list.tasks.push({ text: 'Sample task'});
+        list.edit(0);
+        expect(list.tasks[0].editable).toBe(true);
+    });
+
+    it("should unmark editable item after edit is cancelled", function () {
+        var list = new TodoList({ 
+            tasks: [{ text: 'A task' }]
+        });
+        list.edit(0);
+        list.cancelEdit();
+        expect(list.tasks[0].editable).toBe(false);
+    });
+
+    it("should reset current editable item after you start editing the other", function () {
+        var list = new TodoList({
+            tasks: [
+                { text: 'Task 1' },
+                { text: 'Task 2' }
+            ]
+        });
+        list.edit(0);
+        list.edit(1);
+        expect(list.tasks[0].editable).toBe(false);
+        expect(list.tasks[1].editable).toBe(true);
+    });
 });
 
 })();

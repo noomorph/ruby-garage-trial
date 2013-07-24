@@ -1,3 +1,4 @@
 .sass-cache
 logs/*
 app/app.css
+app/components

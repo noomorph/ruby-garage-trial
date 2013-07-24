@@ -3,6 +3,7 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
 @import "jquery_ui_no_theme";
+@import "angular_ui";
 
 html {
   background-color: #323232;
@@ -127,13 +128,27 @@ h2 {
         border-right: double 4px #efdadf;  
     }
 
-    input[type=checkbox] {
-        float: none;
-        margin-left: 18px;
-    }
-
     .text {
+        position: relative;
         padding-left: 17px;
+
+        input {
+            display: none;
+            box-sizing: border-box;
+            width: 96%;
+            height: 2em;
+            padding: 0 0.5em;
+            margin: 0 2%;
+            box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+
+        &.editable {
+            margin: 0;
+            padding: 0;
+            span { display: none; }
+            input { display: block; }
+        }
     }
 
     .actions {

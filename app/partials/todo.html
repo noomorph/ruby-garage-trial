@@ -11,7 +11,7 @@
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
         <input type="text" ng-model="list.add.text" placeholder="Start typing here to create a task" />
-        <button type="submit" class="btn add-on btn-success" ng-disabled="!list.add.text" ng-click="list.add.do()">Add Task</button>
+        <button name="add-task" type="submit" class="btn add-on btn-success" ng-disabled="!list.add.text" ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">
     <tbody>
@@ -19,11 +19,14 @@
             <td class="checkbox">
                 <input type="checkbox" />
             </td>
-            <td class="text">{{task.text}}</td>
+            <td class="text" ng-class="{ editable: task.editable }">
+                <span>{{task.text}}</span>
+                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" autofocus />
+            </td>
             <td class="actions">
                 <div class="actions-inner">
                     <a href="javascript:void(0)" class="icon drag-small"></a> |
-                    <a href="javascript:void(0)" class="icon pencil-small"></a> |
+                    <a href="javascript:void(0)" class="icon pencil-small" ng-click="list.edit($index)"></a> |
                     <a href="javascript:void(0)" class="icon trash-small" ng-click="list.removeAt($index)"></a>
                 </div>
             </td>
