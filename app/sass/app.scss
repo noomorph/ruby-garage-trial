@@ -1,4 +1,5 @@
 @import "compass/reset";
+@import "compass/css3";
 
 @import "bootstrap";
 @import "bootstrap-responsive";
@@ -144,13 +145,11 @@ h2 {
 
         input {
             display: none;
-            box-sizing: border-box;
+            @include box-sizing (border-box);
             width: 96%;
             height: 2em;
             padding: 0 0.5em;
             margin: 0 2%;
-            box-shadow: none;
-            -webkit-box-shadow: none;
         }
 
         &.editable {
@@ -195,7 +194,7 @@ h2 {
 .todo-add-list {
 	text-align: center;
     .btn-primary {
-        background-image: url(img/cloth.png);
+        // background-image: url(img/cloth.png);
     }
 }
 .copyright {
