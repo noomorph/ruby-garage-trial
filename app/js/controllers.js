@@ -11,9 +11,10 @@ function TodoItem (config) {
 function TodoList (config) {
     _.extend(this, config);
     _.defaults(this, {
-        name: '',
+        name: 'New list',
         tasks: []
     });
+
     this.tasks = _.map(this.tasks, function (config) {
         return new TodoItem(config);
     });
@@ -32,7 +33,19 @@ function TodoList (config) {
     this.cancelEdit = _.bind(function () {
         _.each(this.tasks, function (task) {
             task.editable = false;
+            if (task.lastValue) {
+                task.text = task.lastValue;
+                task.lastValue = undefined;
+            }
         });
+    }, this);
+
+    this.confirmEdit = _.bind(function (index) {
+        var task = this.tasks[index];
+        if (task) {
+            task.editable = false;
+            task.lastValue = undefined;
+        }
     }, this);
 
     this.edit = _.bind(function (index) {
@@ -40,15 +53,14 @@ function TodoList (config) {
         var task = this.tasks[index];
         if (task) {
             task.editable = true;
+            task.lastValue = task.text;
         }
     }, this);
 
     this.removeAt = _.bind(function (index) {
         if (index >= 0 && index < this.tasks.length) {
             this.tasks.splice(index, 1);
-            return true;
         }
-        return false;
     }, this);
 }
 
@@ -79,6 +91,14 @@ function TodoList (config) {
                 ]
             })
         ];
+        $scope.addTodoList = function () {
+            $scope.lists.push(new TodoList());
+        };
+        $scope.removeList = function (index) {
+            if (index >= 0 && index < $scope.lists.length) {
+                $scope.lists.splice(index, 1);
+            }
+        };
     }]);
     todoApp.controllers.controller('AboutCtrl', [function() {
     }]);

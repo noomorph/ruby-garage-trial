@@ -68,7 +68,17 @@ h2 {
         border-left: solid 1px #5284bf;
     }
 
+    .pencil, .trash {
+        display: none;
+    }
+
 	.title { text-align: left; }
+
+    &:hover {
+        .pencil, .trash {
+            display: table-cell;
+        }
+    }
 }
 
 .todo-widget-add {
