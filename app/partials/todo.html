@@ -6,7 +6,7 @@
         <a href="javascript:void(0)" class="icon calendar"></a>
         <div class="title">{{list.name}}</div>
         <a href="javascript:void(0)" class="icon pencil"></a>
-        <a href="javascript:void(0)" class="icon trash"></a>
+        <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)"></a>
     </div>
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
@@ -21,7 +21,7 @@
             </td>
             <td class="text" ng-class="{ editable: task.editable }">
                 <span>{{task.text}}</span>
-                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" autofocus />
+                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmEdit($index)" autofocus />
             </td>
             <td class="actions">
                 <div class="actions-inner">
@@ -36,7 +36,7 @@
 </form>
 
 <div class="todo-add-list">
-    <button class="btn-large btn-primary">Add TODO List</button>
+    <button class="btn-large btn-primary" ng-click="addTodoList()">Add TODO List</button>
 </div>
 
 <div class="copyright">&copy; Ruby Garage</div>
