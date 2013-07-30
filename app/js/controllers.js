@@ -4,7 +4,8 @@ function TodoItem (config) {
     _.extend(this, config);
     _.defaults(this, {
         text: '',
-        editable: false
+        editable: false,
+        done: false
     });
 
     this.cancelEdit = _.bind(function () {
@@ -24,17 +25,28 @@ function TodoItem (config) {
     }, this);
 
     this.edit = _.bind(function (index) {
+       setTimeout(function () {// TODO: move to service
+           $(".editable input").focus();
+       }, 50);
        this.editable = true;
        this.lastValue = this.text;
     }, this);
+
+    this.toggleDone = function (e) {
+        if (e && e.target && e.target.tagName.toLowerCase() === 'input') {
+            return;
+        }
+        this.done = !this.done;
+    };
 }
 
-function TodoList (config) {
+function TodoList (config, $scope) {
     _.extend(this, config);
     _.defaults(this, {
-        name: 'New list',
+        name: '',
         tasks: [],
-        editable: false
+        editable: false,
+        phantom: false
     });
 
     this.tasks = _.map(this.tasks, function (config) {
@@ -65,8 +77,7 @@ function TodoList (config) {
     this.edit = _.bind(function (index) {
         this.cancelEdit();
         this.tasks[index].edit();
-    }, this);
-
+    }, this); 
     this.removeAt = _.bind(function (index) {
         if (index >= 0 && index < this.tasks.length) {
             this.tasks.splice(index, 1);
@@ -74,6 +85,9 @@ function TodoList (config) {
     }, this);
 
     this.rename = _.bind(function () {
+        setTimeout(function () {// TODO: move to service
+            $(".editable input").focus();
+        }, 50);
         this.editable = true;
         this.lastName = this.name;
     }, this);
@@ -82,13 +96,19 @@ function TodoList (config) {
         if (!this.name) {
             return false;
         }
+        this.phantom = false;
         this.editable = false;
         this.lastName = undefined;
     }, this);
 
     this.cancelRename = _.bind(function () {
+        if (this.phantom) {
+            $scope.removeList(this);
+            return;
+        }
+
         this.editable = false;
-        if (!this.name && this.lastName) {
+        if (this.lastName) {
             this.name = this.lastName;
         }
         this.lastName = undefined;
@@ -123,9 +143,14 @@ function TodoList (config) {
             })
         ];
         $scope.addTodoList = function () {
-            $scope.lists.push(new TodoList({editable: true}));
+            $scope.lists.push(new TodoList({editable: true, phantom: true}, $scope));
+            
+            $("html, body").animate({ scrollTop: $(document).height() }, 1000); // TODO: move to service
         };
         $scope.removeList = function (index) {
+            if (typeof index === 'object') {
+                index = $scope.lists.indexOf(index);
+            }
             if (index >= 0 && index < $scope.lists.length) {
                 $scope.lists.splice(index, 1);
             }

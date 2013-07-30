@@ -4,27 +4,33 @@
 <form class="todo-widget" ng-repeat="list in lists">
     <div class="todo-widget-header" ng-class="{ editable: list.editable }">
         <a href="javascript:void(0)" class="icon calendar"></a>
-        <div class="title" ng-class="{ editable: list.editable }" ng-click="list.rename()">
+        <div class="title" ng-class="{ editable: list.editable }" ng-dblclick="list.rename()">
             <span>{{list.name}}</span>
-            <input type="text" required ng-model="list.name" ng-blur="list.cancelRename()" ng-escape="list.cancelRename()" ng-enter="list.confirmRename()" autofocus />
+            <input type="text" maxlength="75" autofocus
+                   placeholder="New list"
+                   ng-model="list.name"
+                   ng-required="!list.phantom"
+                   ng-blur="list.cancelRename()"
+                   ng-escape="list.cancelRename()"
+                   ng-enter="list.confirmRename()" />
         </div>
         <a href="javascript:void(0)" class="icon pencil" ng-click="list.rename()" title="Rename list"></a>
         <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)" title="Delete list"></a>
     </div>
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
-        <input type="text" ng-model="list.add.text" placeholder="Start typing here to create a task" />
+        <input type="text" ng-model="list.add.text" placeholder="Start typing here to create a task" maxlength="70" />
         <button name="add-task" type="submit" class="btn add-on btn-success" ng-disabled="!list.add.text" ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">
     <tbody ui-sortable="sortableOptions">
         <tr ng-repeat="task in list.tasks">
-            <td class="checkbox">
-                <input type="checkbox" />
+            <td class="checkbox" ng-click="task.toggleDone($event)">
+                <input type="checkbox" ng-checked="task.done" />
             </td>
             <td class="text" ng-class="{ editable: task.editable }" ng-dblclick="list.edit($index)">
                 <span>{{task.text}}</span>
-                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmEdit($index)" autofocus />
+                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmEdit($index)" maxlength="70" autofocus />
             </td>
             <td class="actions">
                 <div class="actions-inner">

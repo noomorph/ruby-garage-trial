@@ -1,5 +1,6 @@
 @import "compass/reset";
 @import "compass/css3";
+@import "compass/css3/user-interface";
 
 @import "bootstrap";
 @import "bootstrap-responsive";
@@ -10,14 +11,11 @@
     display: none;
 }
 
-html {
-  background-color: #323232;
-  background-image: url(img/background.png);
-  background-repeat: repeat-x;
-}
-
 body {
-	background: none;
+    background-color: #323232;
+    background-image: url(img/background.png);
+    background-repeat: repeat-x;
+    background-attachment: fixed;
 	text-align: center;
 }
 
@@ -44,6 +42,7 @@ h2 {
 	width: 700px;
 	border-radius: 0 0 20px 20px;
 	overflow: hidden;
+    @include transition(top 1s linear);
 
 	& > div {
 		display: table;
@@ -86,8 +85,11 @@ h2 {
 	.title { text-align: left; }
 
     &.editable {
+        input {
+            width: 530px !important;
+        }
         .pencil, .trash {
-            display: none;
+            visibility: hidden;
         }
     }
 }
@@ -142,10 +144,16 @@ h2 {
         margin: 0 2%;
     }
 
+    span {
+        @include user-select(none);
+    }
+
     &.editable {
         margin: 0;
         padding: 0;
-        span { display: none; }
+        span { 
+            display: none; 
+        }
         input { display: block; }
     }
 }

@@ -2,7 +2,7 @@
 (function () {
 'use strict';
 
-describe('TodoController tests', function() {
+describe('TodoController List tests\n', function() {
     var ctrl, scope;
 
     beforeEach(module('todoApp.controllers'));
@@ -12,78 +12,95 @@ describe('TodoController tests', function() {
         ctrl = $controller('TodoCtrl', {$scope: scope});
     }));
 
-    it("by default we have 2 lists", function () {
+    it("new list is empty", function () {
+        var list = new TodoList();
+
+        expect(list.id).toBeUndefined();
+        expect(list.name).toBe('');
+        expect(list.tasks.length).toBe(0);
+        expect(list.phantom).toBe(false);
+        expect(list.editable).toBe(false);
+    });
+
+    it("has 2 lists by default", function () {
         expect(scope.lists).toBeDefined();
         expect(scope.lists.length).toBe(2);
     });
 
-    it("each list has id, name and tasks", function () {
+    it("has loaded lists with defined fields", function () {
         angular.forEach(scope.lists, function (list) {
             expect(list instanceof TodoList).toBe(true);
             expect(list.id).toBeDefined();
             expect(list.name).toBeDefined();
             expect(list.tasks).toBeDefined();
             expect(list.editable).toBe(false);
+            expect(list.phantom).toBe(false);
         });
     });
 
-    it("after click on Add List we have one list more", function () {
+    it("appends a list to scope after adding", function () {
         var count = scope.lists.length;
 
         scope.addTodoList();
 
-        expect(scope.lists.length).toBe(count + 1);
         var list = scope.lists[count];
-        var empty = new TodoList(); 
-        expect(list.id).toBe(empty.id);
-        expect(list.name).toBe(empty.name);
-        expect(list.tasks.length).toBe(empty.tasks.length);
+        expect(list.id).toBeUndefined();
+        expect(list.name).toBe('');
+        expect(list.tasks.length).toBe(0);
+        expect(list.phantom).toBe(true);
         expect(list.editable).toBe(true);
     });
 
-    it("after click on remove list we have one list less", function () {
+    it("removes phantom list if no name is given", function () {
         var count = scope.lists.length;
-        var list = scope.lists[0];
 
-        scope.removeList(0);
-        expect(scope.lists.length).toBe(count - 1);
+        scope.addTodoList();
+        var list = scope.lists[count];
+        list.cancelRename();
+
         expect(scope.lists).not.toContain(list);
     });
 
-    it("after click on rename list it becomes editable and saves last name", function () {
+    it("makes list not phantom if confirmed", function () {
+        var count = scope.lists.length;
+
+        scope.addTodoList();
+        var list = scope.lists[count];
+        list.name = 'My list';
+        expect(list.confirmRename()).toBe(undefined);
+
+        expect(list.phantom).toBe(false);
+        expect(list.editable).toBe(false);
+        expect(list.name).toBe('My list');
+        expect(scope.lists).toContain(list);
+    });
+
+    it("makes list editable while renaming", function () {
         var list = scope.lists[0];
-        var previousName = list.name;
 
         list.rename();
 
         expect(list.editable).toBe(true);
-        expect(list.name).toBe(previousName);
-        expect(list.lastName).toBe(previousName);
     });
 
-    it("after click on cancel rename list it reverts if name is empty", function () {
+    it("remembers list name on start of renaming", function () {
+        var list = scope.lists[0];
+
+        list.rename();
+
+        expect(list.lastName).toBe(list.name);
+    });
+
+    it("reverts its name after cancel rename of existing list", function () {
         var list = scope.lists[0];
         var previousName = list.name;
 
         list.rename();
-        list.name = '';
+        list.name = 'Some name';
         list.cancelRename();
 
         expect(list.editable).toBe(false);
         expect(list.name).toBe(previousName);
-        expect(list.lastName).toBeUndefined();
-    });
-
-    it("after click on cancel rename list it saves name if its not empty", function () {
-        var list = scope.lists[0];
-        var nextName =  'Something 2';
-
-        list.rename();
-        list.name = nextName;
-        list.cancelRename();
-
-        expect(list.editable).toBe(false);
-        expect(list.name).toBe(nextName);
         expect(list.lastName).toBeUndefined();
     });
 
@@ -111,13 +128,26 @@ describe('TodoController tests', function() {
         expect(list.lastName).toBeDefined();
     });
 
-    it("new list is empty", function () {
-        var list = new TodoList();
+    it("removes a list at index", function () {
+        var count = scope.lists.length;
+        var list = scope.lists[0];
 
-        expect(list.id).toBeUndefined();
-        expect(list.name).toBe('New list');
-        expect(list.tasks.length).toBe(0);
+        scope.removeList(0);
+        expect(scope.lists.length).toBe(count - 1);
+        expect(scope.lists).not.toContain(list);
     });
+
+});
+
+describe('TodoController Task tests\n', function() {
+    var ctrl, scope;
+
+    beforeEach(module('todoApp.controllers'));
+
+    beforeEach(inject(function ($rootScope, $controller) {
+        scope = $rootScope.$new();   
+        ctrl = $controller('TodoCtrl', {$scope: scope});
+    }));
 
     it("add task with empty text does not work", function () {
         var list = new TodoList();
@@ -135,6 +165,8 @@ describe('TodoController tests', function() {
 
         expect(list.tasks.length).toBe(1);
         expect(list.tasks[0].text).toBe('New task');
+        expect(list.tasks[0].done).toBe(false);
+        expect(list.tasks[0].editable).toBe(false);
         expect(list.add.text).toBe('');
     });
 
@@ -212,6 +244,25 @@ describe('TodoController tests', function() {
 
         expect(list.tasks[0].editable).toBe(false);
         expect(list.tasks[1].editable).toBe(true);
+    });
+
+    it("should toggle done flag of task", function () {
+        var item = new TodoItem();
+        expect(item.done).toBe(false);
+        item.toggleDone();
+        expect(item.done).toBe(true);
+        item.toggleDone();
+        expect(item.done).toBe(false);
+    });
+
+    it("should not toggle done flag of task if target is INPUT", function () {
+        var item = new TodoItem();
+        item.toggleDone({ target: { tagName: 'INPUT' }});
+        expect(item.done).toBe(false);
+
+        item.done = true;
+        item.toggleDone({ target: { tagName: 'INPUT' }});
+        expect(item.done).toBe(true);
     });
 });
 
