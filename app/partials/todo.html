@@ -2,11 +2,11 @@
 <h2>From Ruby Garage</h2>
 
 <form class="todo-widget" ng-repeat="list in lists">
-    <div class="todo-widget-header">
+    <div class="todo-widget-header" ng-class="{ editable: list.editable }">
         <a href="javascript:void(0)" class="icon calendar"></a>
-        <div class="title" ng-class="{ editable: list.editable }">
+        <div class="title" ng-class="{ editable: list.editable }" ng-click="list.rename()">
             <span>{{list.name}}</span>
-            <input type="text" required ng-model="list.name" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmRename()" autofocus />
+            <input type="text" required ng-model="list.name" ng-blur="list.cancelRename()" ng-escape="list.cancelRename()" ng-enter="list.confirmRename()" autofocus />
         </div>
         <a href="javascript:void(0)" class="icon pencil" ng-click="list.rename()" title="Rename list"></a>
         <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)" title="Delete list"></a>
@@ -22,7 +22,7 @@
             <td class="checkbox">
                 <input type="checkbox" />
             </td>
-            <td class="text" ng-class="{ editable: task.editable }">
+            <td class="text" ng-class="{ editable: task.editable }" ng-dblclick="list.edit($index)">
                 <span>{{task.text}}</span>
                 <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmEdit($index)" autofocus />
             </td>

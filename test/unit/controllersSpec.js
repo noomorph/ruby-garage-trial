@@ -38,7 +38,7 @@ describe('TodoController tests', function() {
         expect(list.id).toBe(empty.id);
         expect(list.name).toBe(empty.name);
         expect(list.tasks.length).toBe(empty.tasks.length);
-        expect(list.editable).toBe(empty.editable);
+        expect(list.editable).toBe(true);
     });
 
     it("after click on remove list we have one list less", function () {
@@ -61,12 +61,12 @@ describe('TodoController tests', function() {
         expect(list.lastName).toBe(previousName);
     });
 
-    it("after click on cancel rename list it reverts to original state", function () {
+    it("after click on cancel rename list it reverts if name is empty", function () {
         var list = scope.lists[0];
         var previousName = list.name;
 
         list.rename();
-        list.name = 'Something 2';
+        list.name = '';
         list.cancelRename();
 
         expect(list.editable).toBe(false);
@@ -74,7 +74,20 @@ describe('TodoController tests', function() {
         expect(list.lastName).toBeUndefined();
     });
 
-    it("after rename confirmation list's name changes", function () {
+    it("after click on cancel rename list it saves name if its not empty", function () {
+        var list = scope.lists[0];
+        var nextName =  'Something 2';
+
+        list.rename();
+        list.name = nextName;
+        list.cancelRename();
+
+        expect(list.editable).toBe(false);
+        expect(list.name).toBe(nextName);
+        expect(list.lastName).toBeUndefined();
+    });
+
+    it("after rename confirmation list's name changes if it is not empty", function () {
         var list = scope.lists[0];
         var nextName = 'Something 2';
 
@@ -85,6 +98,17 @@ describe('TodoController tests', function() {
         expect(list.editable).toBe(false);
         expect(list.name).toBe(nextName);
         expect(list.lastName).toBeUndefined();
+    });
+
+    it("if rename input of confirmation list is empty then it cannot be saved", function () {
+        var list = scope.lists[0];
+
+        list.rename();
+        list.name = '';
+
+        expect(list.confirmRename()).toBe(false);
+        expect(list.name).toBe('');
+        expect(list.lastName).toBeDefined();
     });
 
     it("new list is empty", function () {
@@ -165,6 +189,19 @@ describe('TodoController tests', function() {
         expect(task.editable).toBe(false);
         expect(task.lastValue).toBeUndefined();
         expect(task.text).toBe('Another text');
+    });
+
+    it("should not confirm editable item if its its text is empty", function () {
+        var list = createListWithTasks(1);
+        var task = list.tasks[0];
+
+        list.edit(0);
+        task.text = '';
+
+        expect(list.confirmEdit(0)).toBe(false);
+        expect(task.editable).toBe(true);
+        expect(task.lastValue).toBeDefined();
+        expect(task.text).toBe('');
     });
 
     it("should reset current editable item after you start editing the other", function () {

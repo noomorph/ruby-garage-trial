@@ -16,6 +16,9 @@ function TodoItem (config) {
     }, this);
 
     this.confirmEdit = _.bind(function () {
+       if (!this.text) {
+           return false;
+       }
        this.editable = false;
        this.lastValue = undefined;
     }, this);
@@ -56,7 +59,7 @@ function TodoList (config) {
     }, this);
 
     this.confirmEdit = _.bind(function (index) {
-        this.tasks[index].confirmEdit();
+        return this.tasks[index].confirmEdit();
     }, this);
 
     this.edit = _.bind(function (index) {
@@ -76,16 +79,19 @@ function TodoList (config) {
     }, this);
 
     this.confirmRename = _.bind(function () {
+        if (!this.name) {
+            return false;
+        }
         this.editable = false;
         this.lastName = undefined;
     }, this);
 
     this.cancelRename = _.bind(function () {
         this.editable = false;
-        if (this.lastName) {
+        if (!this.name && this.lastName) {
             this.name = this.lastName;
-            this.lastName = undefined;
         }
+        this.lastName = undefined;
     }, this);
 }
 
@@ -117,7 +123,7 @@ function TodoList (config) {
             })
         ];
         $scope.addTodoList = function () {
-            $scope.lists.push(new TodoList());
+            $scope.lists.push(new TodoList({editable: true}));
         };
         $scope.removeList = function (index) {
             if (index >= 0 && index < $scope.lists.length) {

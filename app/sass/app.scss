@@ -84,6 +84,12 @@ h2 {
     }
 
 	.title { text-align: left; }
+
+    &.editable {
+        .pencil, .trash {
+            display: none;
+        }
+    }
 }
 
 .todo-widget-add {
