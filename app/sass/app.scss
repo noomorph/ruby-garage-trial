@@ -6,7 +6,7 @@
 @import "jquery_ui_no_theme";
 @import "angular_ui";
 
-[ng-cloak] {
+.images-not-loaded, [ng-cloak] {
     display: none;
 }
 
