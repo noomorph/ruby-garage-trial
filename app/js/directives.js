@@ -2,7 +2,7 @@
 (function () {
 //'use strict';
 
-angular.module('todoApp.directives', []).
+angular.module('todoApp.directives', ['ui.sortable']).
     directive('appVersion', ['version', function(version) {
         return function(scope, elm, attrs) {
             elm.text(version);
@@ -10,7 +10,7 @@ angular.module('todoApp.directives', []).
     }]).
     directive('ngFocus', ['$parse', function($parse) {
       return function(scope, element, attr) {
-        var fn = $parse(attr['ngFocus']);
+        var fn = $parse(attr.ngFocus);
         element.bind('focus', function(event) {
           scope.$apply(function() {
             fn(scope, {$event:event});
@@ -20,7 +20,7 @@ angular.module('todoApp.directives', []).
     }]).
     directive('ngBlur', ['$parse', function($parse) {
       return function(scope, element, attr) {
-        var fn = $parse(attr['ngBlur']);
+        var fn = $parse(attr.ngBlur);
         element.bind('blur', function(event) {
           scope.$apply(function() {
             fn(scope, {$event:event});

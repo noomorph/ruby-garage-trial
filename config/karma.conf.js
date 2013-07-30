@@ -3,8 +3,11 @@ basePath = '../';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  'app/components/underscore/underscore.js',
+  'app/lib/underscore/underscore.js',
+  'app/lib/jquery/jquery*.js',
+  'app/lib/jquery.ui/jq*ui*min.js',
   'app/lib/angular/angular.js',
+  'app/lib/angular.ui/sortable.js',
   'app/lib/angular/angular-*.js',
   'test/lib/angular/angular-mocks.js',
   'app/js/**/*.js',

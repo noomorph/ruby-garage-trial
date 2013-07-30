@@ -27,6 +27,12 @@ describe('todo app', function() {
             input.val('New task');
             // expect(button.attr('disabled')).toBe('disabled');
         });
+        it('should make task title editable after click on pencil', function() {
+            var header = element('h2+form .todo-widget-header .title');
+            var pencil = element('h2+form .todo-widget-header .icon.pencil');
+            pencil.click();
+            expect(header.count()).toBe(1);
+        });
         it('should delete task after click on delete button', function() {
             var items = element('h2+form tbody tr');
             expect(items.count()).toBe(4);

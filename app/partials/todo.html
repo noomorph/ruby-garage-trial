@@ -4,9 +4,12 @@
 <form class="todo-widget" ng-repeat="list in lists">
     <div class="todo-widget-header">
         <a href="javascript:void(0)" class="icon calendar"></a>
-        <div class="title">{{list.name}}</div>
-        <a href="javascript:void(0)" class="icon pencil"></a>
-        <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)"></a>
+        <div class="title" ng-class="{ editable: list.editable }">
+            <span>{{list.name}}</span>
+            <input type="text" required ng-model="list.name" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmRename()" autofocus />
+        </div>
+        <a href="javascript:void(0)" class="icon pencil" ng-click="list.rename()" title="Rename list"></a>
+        <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)" title="Delete list"></a>
     </div>
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
@@ -14,7 +17,7 @@
         <button name="add-task" type="submit" class="btn add-on btn-success" ng-disabled="!list.add.text" ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">
-    <tbody>
+    <tbody ui-sortable="sortableOptions">
         <tr ng-repeat="task in list.tasks">
             <td class="checkbox">
                 <input type="checkbox" />

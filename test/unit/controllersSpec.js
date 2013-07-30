@@ -23,6 +23,7 @@ describe('TodoController tests', function() {
             expect(list.id).toBeDefined();
             expect(list.name).toBeDefined();
             expect(list.tasks).toBeDefined();
+            expect(list.editable).toBe(false);
         });
     });
 
@@ -37,6 +38,7 @@ describe('TodoController tests', function() {
         expect(list.id).toBe(empty.id);
         expect(list.name).toBe(empty.name);
         expect(list.tasks.length).toBe(empty.tasks.length);
+        expect(list.editable).toBe(empty.editable);
     });
 
     it("after click on remove list we have one list less", function () {
@@ -46,6 +48,43 @@ describe('TodoController tests', function() {
         scope.removeList(0);
         expect(scope.lists.length).toBe(count - 1);
         expect(scope.lists).not.toContain(list);
+    });
+
+    it("after click on rename list it becomes editable and saves last name", function () {
+        var list = scope.lists[0];
+        var previousName = list.name;
+
+        list.rename();
+
+        expect(list.editable).toBe(true);
+        expect(list.name).toBe(previousName);
+        expect(list.lastName).toBe(previousName);
+    });
+
+    it("after click on cancel rename list it reverts to original state", function () {
+        var list = scope.lists[0];
+        var previousName = list.name;
+
+        list.rename();
+        list.name = 'Something 2';
+        list.cancelRename();
+
+        expect(list.editable).toBe(false);
+        expect(list.name).toBe(previousName);
+        expect(list.lastName).toBeUndefined();
+    });
+
+    it("after rename confirmation list's name changes", function () {
+        var list = scope.lists[0];
+        var nextName = 'Something 2';
+
+        list.rename();
+        list.name = nextName;
+        list.confirmRename();
+
+        expect(list.editable).toBe(false);
+        expect(list.name).toBe(nextName);
+        expect(list.lastName).toBeUndefined();
     });
 
     it("new list is empty", function () {

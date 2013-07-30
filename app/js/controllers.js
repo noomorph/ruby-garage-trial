@@ -6,13 +6,32 @@ function TodoItem (config) {
         text: '',
         editable: false
     });
+
+    this.cancelEdit = _.bind(function () {
+        this.editable = false;
+        if (this.lastValue) {
+            this.text = this.lastValue;
+            this.lastValue = undefined;
+        }
+    }, this);
+
+    this.confirmEdit = _.bind(function () {
+       this.editable = false;
+       this.lastValue = undefined;
+    }, this);
+
+    this.edit = _.bind(function (index) {
+       this.editable = true;
+       this.lastValue = this.text;
+    }, this);
 }
 
 function TodoList (config) {
     _.extend(this, config);
     _.defaults(this, {
         name: 'New list',
-        tasks: []
+        tasks: [],
+        editable: false
     });
 
     this.tasks = _.map(this.tasks, function (config) {
@@ -32,34 +51,40 @@ function TodoList (config) {
 
     this.cancelEdit = _.bind(function () {
         _.each(this.tasks, function (task) {
-            task.editable = false;
-            if (task.lastValue) {
-                task.text = task.lastValue;
-                task.lastValue = undefined;
-            }
+            task.cancelEdit();
         });
     }, this);
 
     this.confirmEdit = _.bind(function (index) {
-        var task = this.tasks[index];
-        if (task) {
-            task.editable = false;
-            task.lastValue = undefined;
-        }
+        this.tasks[index].confirmEdit();
     }, this);
 
     this.edit = _.bind(function (index) {
         this.cancelEdit();
-        var task = this.tasks[index];
-        if (task) {
-            task.editable = true;
-            task.lastValue = task.text;
-        }
+        this.tasks[index].edit();
     }, this);
 
     this.removeAt = _.bind(function (index) {
         if (index >= 0 && index < this.tasks.length) {
             this.tasks.splice(index, 1);
+        }
+    }, this);
+
+    this.rename = _.bind(function () {
+        this.editable = true;
+        this.lastName = this.name;
+    }, this);
+
+    this.confirmRename = _.bind(function () {
+        this.editable = false;
+        this.lastName = undefined;
+    }, this);
+
+    this.cancelRename = _.bind(function () {
+        this.editable = false;
+        if (this.lastName) {
+            this.name = this.lastName;
+            this.lastName = undefined;
         }
     }, this);
 }
@@ -98,6 +123,10 @@ function TodoList (config) {
             if (index >= 0 && index < $scope.lists.length) {
                 $scope.lists.splice(index, 1);
             }
+        };
+        $scope.sortableOptions = {
+            handle: ".drag-small",
+            axis: "y"
         };
     }]);
     todoApp.controllers.controller('AboutCtrl', [function() {
