@@ -6,6 +6,10 @@
 @import "jquery_ui_no_theme";
 @import "angular_ui";
 
+[ng-cloak] {
+    display: none;
+}
+
 html {
   background-color: #323232;
   background-image: url(img/background.png);
@@ -157,6 +161,10 @@ h2 {
         width: 45px;
         padding-left: 0;
         border-right: double 4px #efdadf;  
+
+        input {
+            margin-left: 15px;
+        }
     }
 
     .text {
