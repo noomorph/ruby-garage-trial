@@ -1,42 +1,48 @@
 <h1>Simple Todo Lists</h1>
 <h2>From Ruby Garage</h2>
+<fb:login-button autologoutlink="true"></fb:login-button>
 
-<form class="todo-widget" ng-repeat="list in lists">
-    <div class="todo-widget-header" ng-class="{ editable: list.editable }">
+<form class="todo-widget" data-ng-repeat="list in lists">
+    <div class="todo-widget-header" data-ng-class="{ editable: list.editable }">
         <a href="javascript:void(0)" class="icon calendar"></a>
-        <div class="title" ng-class="{ editable: list.editable }" ng-dblclick="list.rename()">
+        <div class="title" data-ng-class="{ editable: list.editable }" data-ng-dblclick="list.rename()">
             <span>{{list.name}}</span>
             <input type="text" maxlength="75" autofocus
                    placeholder="New list"
-                   ng-model="list.name"
-                   ng-required="!list.phantom"
-                   ng-blur="list.cancelRename()"
-                   ng-escape="list.cancelRename()"
-                   ng-enter="list.confirmRename()" />
+                   data-ng-model="list.name"
+                   data-ng-required="!list.phantom"
+                   data-ng-blur="list.cancelRename()"
+                   data-ng-escape="list.cancelRename()"
+                   data-ng-enter="list.confirmRename()" />
         </div>
-        <a href="javascript:void(0)" class="icon pencil" ng-click="list.rename()" title="Rename list"></a>
-        <a href="javascript:void(0)" class="icon trash" ng-click="removeList($index)" title="Delete list"></a>
+        <a href="javascript:void(0)" class="icon pencil" data-ng-click="list.rename()" title="Rename list"></a>
+        <a href="javascript:void(0)" class="icon trash" data-ng-click="removeList($index)" title="Delete list"></a>
     </div>
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
-        <input type="text" ng-model="list.add.text" placeholder="Start typing here to create a task" maxlength="70" />
-        <button name="add-task" type="submit" class="btn add-on btn-success" ng-disabled="!list.add.text" ng-click="list.add.do()">Add Task</button>
+        <input type="text" data-ng-model="list.add.text" placeholder="Start typing here to create a task" maxlength="70" />
+        <button name="add-task" type="submit" class="btn add-on btn-success" data-ng-disabled="!list.add.text" data-ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">
-    <tbody ui-sortable="sortableOptions">
-        <tr ng-repeat="task in list.tasks">
-            <td class="checkbox" ng-click="task.toggleDone($event)">
-                <input type="checkbox" ng-checked="task.done" />
+    <tbody data-ui-sortable="sortableOptions">
+        <tr data-ng-repeat="task in list.tasks">
+            <td class="checkbox" data-ng-click="task.toggleDone($event)">
+                <input type="checkbox" data-ng-checked="task.done" />
             </td>
-            <td class="text" ng-class="{ editable: task.editable }" ng-dblclick="list.edit($index)">
+            <td class="text" data-ng-class="{ editable: task.editable }" data-ng-dblclick="list.edit($index)">
                 <span>{{task.text}}</span>
-                <input type="text" required ng-model="task.text" ng-blur="list.cancelEdit()" ng-escape="list.cancelEdit()" ng-enter="list.confirmEdit($index)" maxlength="70" autofocus />
+                <input type="text" required maxlength="70" 
+                    data-ng-model="task.text"
+                    data-ng-blur="list.cancelEdit()"
+                    data-ng-escape="list.cancelEdit()"
+                    data-ng-enter="list.confirmEdit($index)"
+                    autofocus />
             </td>
             <td class="actions">
                 <div class="actions-inner">
                     <a href="javascript:void(0)" class="icon drag-small"></a> |
-                    <a href="javascript:void(0)" class="icon pencil-small" ng-click="list.edit($index)"></a> |
-                    <a href="javascript:void(0)" class="icon trash-small" ng-click="list.removeAt($index)"></a>
+                    <a href="javascript:void(0)" class="icon pencil-small" data-ng-click="list.edit($index)"></a> |
+                    <a href="javascript:void(0)" class="icon trash-small" data-ng-click="list.removeAt($index)"></a>
                 </div>
             </td>
         </tr>
@@ -45,7 +51,7 @@
 </form>
 
 <div class="todo-add-list">
-    <button class="btn-large btn-primary" ng-click="addTodoList()">Add TODO List</button>
+    <button class="btn-large btn-primary" data-ng-click="addTodoList()">Add TODO List</button>
 </div>
 
 <div class="copyright">&copy; Ruby Garage</div>

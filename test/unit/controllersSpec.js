@@ -9,7 +9,7 @@ describe('TodoController List tests\n', function() {
 
     beforeEach(inject(function ($rootScope, $controller) {
         scope = $rootScope.$new();   
-        ctrl = $controller('TodoCtrl', {$scope: scope});
+        ctrl = $controller('TodoController', {$scope: scope});
     }));
 
     it("new list is empty", function () {
@@ -146,7 +146,7 @@ describe('TodoController Task tests\n', function() {
 
     beforeEach(inject(function ($rootScope, $controller) {
         scope = $rootScope.$new();   
-        ctrl = $controller('TodoCtrl', {$scope: scope});
+        ctrl = $controller('TodoController', {$scope: scope});
     }));
 
     it("add task with empty text does not work", function () {
