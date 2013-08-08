@@ -1,4 +1,4 @@
-function TodoItem (config) {
+function TodoItem (config, $scope) {
     _.extend(this, config);
     _.defaults(this, {
         text: '',
@@ -20,6 +20,8 @@ function TodoItem (config) {
        }
        this.editable = false;
        this.lastValue = undefined;
+
+       $scope.$emit('datachanged');
     }, this);
 
     this.edit = _.bind(function (index) {
@@ -31,10 +33,11 @@ function TodoItem (config) {
     }, this);
 
     this.toggleDone = function (e) {
-        if (e && e.target && e.target.tagName.toLowerCase() === 'input') {
-            return;
+        if (!(e && e.target && e.target.tagName.toLowerCase() === 'input')) {
+            this.done = !this.done;
         }
-        this.done = !this.done;
+        $scope.$emit('datachanged');
+        return;
     };
 }
 
@@ -48,7 +51,7 @@ function TodoList (config, $scope) {
     });
 
     this.tasks = _.map(this.tasks, function (config) {
-        return new TodoItem(config);
+        return new TodoItem(config, $scope);
     });
 
     this.add = { 
@@ -69,16 +72,20 @@ function TodoList (config, $scope) {
     }, this);
 
     this.confirmEdit = _.bind(function (index) {
-        return this.tasks[index].confirmEdit();
+        var result = this.tasks[index].confirmEdit();
+        if (result !== false) { $scope.$emit('datachanged'); }
+        return result;
     }, this);
 
     this.edit = _.bind(function (index) {
         this.cancelEdit();
         this.tasks[index].edit();
     }, this); 
+
     this.removeAt = _.bind(function (index) {
         if (index >= 0 && index < this.tasks.length) {
             this.tasks.splice(index, 1);
+            $scope.$emit('datachanged');
         }
     }, this);
 
@@ -97,6 +104,8 @@ function TodoList (config, $scope) {
         this.phantom = false;
         this.editable = false;
         this.lastName = undefined;
+
+        $scope.$emit('datachanged');
     }, this);
 
     this.cancelRename = _.bind(function () {
@@ -113,34 +122,14 @@ function TodoList (config, $scope) {
     }, this);
 }
 
-todoApp.controllers.controller('TodoController', ['$scope', function ($scope) {
-    $scope.lists = [
-        new TodoList({
-            id: 1,
-            name: 'Complete the test task for Ruby Garage',
-            tasks: [
-                { text: 'Open this mock-up in Adobe Fireworks', done: true },
-                { text: 'Attentively check the file' },
-                { text: 'Write HTML & CSS' },
-                { text: 'Add JavaScript to implement adding / editing / removing for todo items and lists taking into account as more use cases as possible' }
-            ]
-        }),
-        new TodoList({
-            id: 2,
-            name: 'For Home',
-            tasks: [
-                { text: 'Buy a milk' },
-                { text: 'Call Mam' },
-                { text: 'Clean the room' },
-                { text: 'Repair the DVD Player' }
-            ]
-        })
-    ];
+todoApp.controllers.controller('TodoController', ['$scope', 'persistance', function ($scope, persistance) {
+    
     $scope.addTodoList = function () {
         $scope.lists.push(new TodoList({editable: true, phantom: true}, $scope));
         
         $("html, body").animate({ scrollTop: $(document).height() }, 1000); // TODO: move to service
     };
+
     $scope.removeList = function (index) {
         if (typeof index === 'object') {
             index = $scope.lists.indexOf(index);
@@ -148,10 +137,29 @@ todoApp.controllers.controller('TodoController', ['$scope', function ($scope) {
         if (index >= 0 && index < $scope.lists.length) {
             $scope.lists.splice(index, 1);
         }
+        $scope.$emit('datachanged');
     };
+
     $scope.sortableOptions = {
         handle: ".drag-small",
         axis: "y"
     };
+
+    $scope.load = function (ename, newPersHack) {
+        persistance.get(function (lists) {
+            $scope.lists = _.map(lists, function (list) {
+                return new TodoList(list, $scope);
+            });
+        });
+    };
+
+    $scope.persist = function () {
+        persistance.set($scope.lists);
+    };
+
+    $scope.load();
+
+    $scope.$on('storagechanged', $scope.load);
+    $scope.$on('datachanged', $scope.persist);
 }]);
 

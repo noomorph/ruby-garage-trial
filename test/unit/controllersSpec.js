@@ -2,14 +2,21 @@
 (function () {
 'use strict';
 
-describe('TodoController List tests\n', function() {
-    var ctrl, scope;
+angular.module('stub.services', []).
+    factory('persistance', todoApp.StubStorage);
 
+describe('TodoController List tests\n', function() {
+    var ctrl, scope, service;
+
+    beforeEach(module('stub.services'));
     beforeEach(module('todoApp.controllers'));
 
-    beforeEach(inject(function ($rootScope, $controller) {
+    beforeEach(inject(function ($rootScope, persistance, $controller) {
         scope = $rootScope.$new();   
+        service = persistance;
         ctrl = $controller('TodoController', {$scope: scope});
+        service.onset = function () {};
+        spyOn(service, 'onset');
     }));
 
     it("new list is empty", function () {
@@ -49,6 +56,8 @@ describe('TodoController List tests\n', function() {
         expect(list.tasks.length).toBe(0);
         expect(list.phantom).toBe(true);
         expect(list.editable).toBe(true);
+
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("removes phantom list if no name is given", function () {
@@ -59,6 +68,7 @@ describe('TodoController List tests\n', function() {
         list.cancelRename();
 
         expect(scope.lists).not.toContain(list);
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("makes list not phantom if confirmed", function () {
@@ -73,6 +83,7 @@ describe('TodoController List tests\n', function() {
         expect(list.editable).toBe(false);
         expect(list.name).toBe('My list');
         expect(scope.lists).toContain(list);
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("makes list editable while renaming", function () {
@@ -81,6 +92,7 @@ describe('TodoController List tests\n', function() {
         list.rename();
 
         expect(list.editable).toBe(true);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("remembers list name on start of renaming", function () {
@@ -89,6 +101,7 @@ describe('TodoController List tests\n', function() {
         list.rename();
 
         expect(list.lastName).toBe(list.name);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("reverts its name after cancel rename of existing list", function () {
@@ -102,6 +115,7 @@ describe('TodoController List tests\n', function() {
         expect(list.editable).toBe(false);
         expect(list.name).toBe(previousName);
         expect(list.lastName).toBeUndefined();
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("after rename confirmation list's name changes if it is not empty", function () {
@@ -115,6 +129,7 @@ describe('TodoController List tests\n', function() {
         expect(list.editable).toBe(false);
         expect(list.name).toBe(nextName);
         expect(list.lastName).toBeUndefined();
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("if rename input of confirmation list is empty then it cannot be saved", function () {
@@ -126,6 +141,7 @@ describe('TodoController List tests\n', function() {
         expect(list.confirmRename()).toBe(false);
         expect(list.name).toBe('');
         expect(list.lastName).toBeDefined();
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("removes a list at index", function () {
@@ -135,18 +151,32 @@ describe('TodoController List tests\n', function() {
         scope.removeList(0);
         expect(scope.lists.length).toBe(count - 1);
         expect(scope.lists).not.toContain(list);
+        expect(service.onset).toHaveBeenCalled();
     });
 
+    it("should change lists if service is reloaded", function () {
+        service.data = [];
+        scope.$broadcast('storagechanged');
+
+        expect(scope.lists.length).toBe(0);
+        expect(service.onset).not.toHaveBeenCalled();
+    });
 });
 
 describe('TodoController Task tests\n', function() {
-    var ctrl, scope;
+    var scope, service;
 
     beforeEach(module('todoApp.controllers'));
+    beforeEach(module('stub.services'));
 
-    beforeEach(inject(function ($rootScope, $controller) {
+    beforeEach(inject(function ($rootScope, persistance) {
         scope = $rootScope.$new();   
-        ctrl = $controller('TodoController', {$scope: scope});
+        service = persistance;
+        service.onset = function () {};
+        spyOn(service, 'onset');
+        scope.$on('datachanged', function () {
+            service.onset();
+        });
     }));
 
     it("add task with empty text does not work", function () {
@@ -155,10 +185,11 @@ describe('TodoController Task tests\n', function() {
         list.add.do();
 
         expect(list.tasks.length).toBe(0);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("after click on add task, new list is added and text is cleared", function () {
-        var list = new TodoList();
+        var list = new TodoList({}, scope);
 
         list.add.text = 'New task';
         list.add.do();
@@ -168,6 +199,7 @@ describe('TodoController Task tests\n', function() {
         expect(list.tasks[0].done).toBe(false);
         expect(list.tasks[0].editable).toBe(false);
         expect(list.add.text).toBe('');
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     var createListWithTasks = function (count) {
@@ -175,7 +207,7 @@ describe('TodoController Task tests\n', function() {
         for (i = 0; i < count; i++) {
             tasks.push({ text: 'Task ' + i });
         }
-        return new TodoList({ tasks: tasks });
+        return new TodoList({ tasks: tasks }, scope);
     };
 
     it("after click on remove task, it is removed", function () {
@@ -184,6 +216,7 @@ describe('TodoController Task tests\n', function() {
         list.removeAt(0);
 
         expect(list.tasks.length).toBe(0);
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("should mark item as editable after button click", function () {
@@ -194,6 +227,7 @@ describe('TodoController Task tests\n', function() {
 
         expect(task.editable).toBe(true);
         expect(task.lastValue).toBe(task.text);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("should unmark editable item and revert text after edit is cancelled", function () {
@@ -208,6 +242,7 @@ describe('TodoController Task tests\n', function() {
         expect(task.editable).toBe(false);
         expect(task.lastValue).toBeUndefined();
         expect(task.text).toBe(text);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("should unmark editable item and apply text after edit is confirmed", function () {
@@ -221,6 +256,7 @@ describe('TodoController Task tests\n', function() {
         expect(task.editable).toBe(false);
         expect(task.lastValue).toBeUndefined();
         expect(task.text).toBe('Another text');
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("should not confirm editable item if its its text is empty", function () {
@@ -234,6 +270,7 @@ describe('TodoController Task tests\n', function() {
         expect(task.editable).toBe(true);
         expect(task.lastValue).toBeDefined();
         expect(task.text).toBe('');
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("should reset current editable item after you start editing the other", function () {
@@ -244,25 +281,29 @@ describe('TodoController Task tests\n', function() {
 
         expect(list.tasks[0].editable).toBe(false);
         expect(list.tasks[1].editable).toBe(true);
+        expect(service.onset).not.toHaveBeenCalled();
     });
 
     it("should toggle done flag of task", function () {
-        var item = new TodoItem();
+        var item = new TodoItem({}, scope);
         expect(item.done).toBe(false);
         item.toggleDone();
         expect(item.done).toBe(true);
         item.toggleDone();
         expect(item.done).toBe(false);
+        expect(service.onset).toHaveBeenCalled();
     });
 
     it("should not toggle done flag of task if target is INPUT", function () {
-        var item = new TodoItem();
+        var item = new TodoItem({}, scope);
         item.toggleDone({ target: { tagName: 'INPUT' }});
         expect(item.done).toBe(false);
 
         item.done = true;
         item.toggleDone({ target: { tagName: 'INPUT' }});
         expect(item.done).toBe(true);
+
+        expect(service.onset).toHaveBeenCalled(); // still we need to fire event
     });
 });
 

@@ -1,46 +1,12 @@
 /*global angular, FB*/
 
-(function () {
-'use strict';
+(function (wnd) {
+//'use strict';
 
-    angular.
-    module('todoApp.services', []).
-    value('version', '0.1').
-    factory('auth', ['$rootScope', function ($rootScope) {
-        var me = this;
+    wnd.todoApp = wnd.todoApp || {};
+    todoApp.services = angular.module('todoApp.services', []);
 
-        this.watchLoginChange = function() {
-            var callback = function(response) {
-                $("[data-ng-view]").show();
-                if (response.status === 'connected') {
-                    me.getUserInfo(function () { });
-                } 
-                else {
-                    $("#login").modal();
-                }
-            };
-            FB.Event.subscribe('auth.authResponseChange', callback);
-            FB.getLoginStatus(callback);
-        };
+    todoApp.services.value('version', '0.1');
 
-        this.getUserInfo = function(callback) {
-            FB.api('/me', function(response) {
-                $rootScope.$apply(function() { 
-                    $rootScope.user = me.user = response; 
-                });
-                if (callback) { callback(); }
-            });
-        };
-
-        this.logout = function() {
-            FB.logout(function(response) {
-                $rootScope.$apply(function() { 
-                    $rootScope.user = me.user = null;
-                });	
-            });
-        };
-
-        return this;
-    }]);
-
-})();
+    
+})(window);
