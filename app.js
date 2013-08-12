@@ -1,11 +1,11 @@
 var redis = require('redis'),
     client = redis.createClient(),
     express = require('express'),
-    fbVerify = require('./fb-verify'),
+    fbVerify = require('./lib/fb-verify'),
     appId = '188996117830571',
     app = express().
-              use(express.logger('dev')).
-              use(express.static('../app')).
+              // use(express.logger('dev')).
+              use(express.static('app')).
               use(express.query()).
               use(express.bodyParser()).
               get('/lists', function (req, res) {
@@ -38,10 +38,9 @@ var redis = require('redis'),
                       }
                   });
               }).
-              listen(3000);
+              listen(80);
 
 client.on("error", function (err) {
     console.log("Error " + err);
 });
 
-console.log('Connect server listening on port 3000');
