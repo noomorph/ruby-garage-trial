@@ -12,6 +12,7 @@ redis.on("error", function (err) {
 
 var express = require('express'),
     fbVerify = require('./lib/fb-verify'),
+    port = process.env.PORT || 3000,
     appId = '188996117830571',
     app = express().
               use(express.logger()).
@@ -48,6 +49,8 @@ var express = require('express'),
                       }
                   });
               }).
-              listen(80);
+              listen(port);
+
+console.log('listening at port: ' + port);
 
 
