@@ -3,6 +3,8 @@
         imgs = [
             'img/background.png',
             'img/calendar.png',
+            'img/checkbox_empty.png',
+            'img/checkbox_full.png',
             'img/cloth.png',
             'img/drag-small.png',
             'img/metal.png',

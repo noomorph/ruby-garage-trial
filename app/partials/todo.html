@@ -1,6 +1,6 @@
 <h1>Simple Todo Lists</h1>
 <h2>From Ruby Garage</h2>
-<fb:login-button autologoutlink="true"></fb:login-button>
+<fb:login-button style="margin-bottom: 2em;" autologoutlink="true"></fb:login-button>
 
 <form class="todo-widget" data-ng-repeat="list in lists">
     <div class="todo-widget-header" data-ng-class="{ editable: list.editable }">
@@ -24,10 +24,10 @@
         <button name="add-task" type="submit" class="btn add-on btn-success" data-ng-disabled="!list.add.text" data-ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">
-    <tbody data-ui-sortable="sortableOptions">
+    <tbody data-ui-sortable="sortableOptions" data-ng-model="list.tasks">
         <tr data-ng-repeat="task in list.tasks">
             <td class="checkbox" data-ng-click="task.toggleDone($event)">
-                <input type="checkbox" data-ng-checked="task.done" />
+                <img data-ng-src="{{task.getImageUri()}}" alt="" />
             </td>
             <td class="text" data-ng-class="{ editable: task.editable }" data-ng-dblclick="list.edit($index)">
                 <span>{{task.text}}</span>

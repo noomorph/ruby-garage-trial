@@ -199,7 +199,7 @@ describe('TodoController Task tests\n', function() {
         expect(list.tasks[0].done).toBe(false);
         expect(list.tasks[0].editable).toBe(false);
         expect(list.add.text).toBe('');
-        expect(service.onset).not.toHaveBeenCalled();
+        expect(service.onset).toHaveBeenCalled();
     });
 
     var createListWithTasks = function (count) {
@@ -294,16 +294,12 @@ describe('TodoController Task tests\n', function() {
         expect(service.onset).toHaveBeenCalled();
     });
 
-    it("should not toggle done flag of task if target is INPUT", function () {
+    it("should display image url depending on status", function () {
         var item = new TodoItem({}, scope);
-        item.toggleDone({ target: { tagName: 'INPUT' }});
-        expect(item.done).toBe(false);
+        expect(item.getImageUri()).toBe("img/checkbox_empty.png");
 
         item.done = true;
-        item.toggleDone({ target: { tagName: 'INPUT' }});
-        expect(item.done).toBe(true);
-
-        expect(service.onset).toHaveBeenCalled(); // still we need to fire event
+        expect(item.getImageUri()).toBe("img/checkbox_full.png");
     });
 });
 

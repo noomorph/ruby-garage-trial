@@ -6,6 +6,10 @@ function TodoItem (config, $scope) {
         done: false
     });
 
+    this.getImageUri = _.bind(function () {
+        return "img/checkbox_" + (this.done ? 'full' : 'empty') + ".png";
+    }, this);
+
     this.cancelEdit = _.bind(function () {
         this.editable = false;
         if (this.lastValue) {
@@ -33,9 +37,7 @@ function TodoItem (config, $scope) {
     }, this);
 
     this.toggleDone = function (e) {
-        if (!(e && e.target && e.target.tagName.toLowerCase() === 'input')) {
-            this.done = !this.done;
-        }
+        this.done = !this.done;
         $scope.$emit('datachanged');
         return;
     };
@@ -59,8 +61,9 @@ function TodoList (config, $scope) {
         do: _.bind(function () {
             var text = this.add.text;
             if (text) {
-                this.tasks.unshift(new TodoItem({ text: text }));
+                this.tasks.unshift(new TodoItem({ text: text }, $scope));
                 this.add.text = '';
+                $scope.$emit('datachanged');
             }
         }, this)
     };
@@ -122,7 +125,7 @@ function TodoList (config, $scope) {
     }, this);
 }
 
-todoApp.controllers.controller('TodoController', ['$scope', 'persistance', function ($scope, persistance) {
+todoApp.controllers.controller('TodoController', ['$scope', '$timeout', 'persistance', function ($scope, $timeout, persistance) {
     
     $scope.addTodoList = function () {
         $scope.lists.push(new TodoList({editable: true, phantom: true}, $scope));
@@ -142,7 +145,12 @@ todoApp.controllers.controller('TodoController', ['$scope', 'persistance', funct
 
     $scope.sortableOptions = {
         handle: ".drag-small",
-        axis: "y"
+        axis: "y",
+        stop: function () {
+            $timeout(function () { // dirty hack
+                $scope.$emit('datachanged');
+            }, 500);
+        }
     };
 
     $scope.load = function (ename, newPersHack) {

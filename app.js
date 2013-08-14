@@ -41,7 +41,7 @@ var express = require('express'),
                       return res.send(401, identity || undefined);
                   }
 
-                  redis.set(id, JSON.stringify(req.body), function (err) {
+                  redis.set(identity.user_id, JSON.stringify(req.body), function (err) {
                       if (err) {
                           res.json(500, err);
                       } else {

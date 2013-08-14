@@ -9,14 +9,15 @@ todoApp.services.factory('auth', ['$rootScope', function ($rootScope) {
 
         this.watchLoginChange = function() {
             var callback = function(response) {
-                $("[data-ng-view]").show();
                 if (response.status === 'connected') {
                     $rootScope.authResponse = response.authResponse;
                     me.getUserInfo(function () {
+                        $("[data-ng-view]").show();
                         $("#login").modal('hide');
                     });
                 } 
                 else {
+                    $("[data-ng-view]").show();
                     $("#login").modal();
                 }
             };
@@ -28,9 +29,9 @@ todoApp.services.factory('auth', ['$rootScope', function ($rootScope) {
             FB.api('/me', function(response) {
                 $rootScope.$apply(function() { 
                     $rootScope.user = me.user = response; 
+                    $rootScope.$broadcast('authorized');
+                    if (callback) { callback(); }
                 });
-                $rootScope.$broadcast('authorized');
-                if (callback) { callback(); }
             });
         };
 

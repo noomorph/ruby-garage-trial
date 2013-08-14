@@ -44,6 +44,10 @@ h2 {
 	overflow: hidden;
     @include transition(top 1s linear);
 
+    &:nth-child(4) {
+        margin-top: 0;
+    }
+
 	& > div {
 		display: table;
 	}
@@ -176,7 +180,8 @@ h2 {
         padding-left: 0;
         border-right: double 4px #efdadf;  
 
-        input {
+        img {
+            width: 16px;
             margin-left: 15px;
         }
     }

@@ -75,7 +75,7 @@ todoApp.ServerStorage = function ($http, $rootScope, signature, onerror) {
         if (!data) { throw new Error ("no data to save"); }
 
         var promise = $http.put('/lists', data, {
-            params: this.signature
+            params: signature
         }).error(this.onerror);
 
         if (onsave) { promise.success(onsave); }
@@ -88,17 +88,17 @@ var StubStorage = todoApp.StubStorage,
     LocalStorage = todoApp.LocalStorage,
     ServerStorage = todoApp.ServerStorage;
 
-todoApp.services.factory('persistance', ['$http', '$rootScope', function ($http, $rootScope) {
-    this.storage = new StubStorage();
-
-    this.onerror = function (data, status, headers, config) {
+todoApp.services.service('persistance', ['$http', '$rootScope', function ($http, $rootScope) {
+    this.onerror = _.bind(function (data, status, headers, config) {
         $rootScope.$broadcast('error', data, status);
-    };
+    }, this);
 
-    this.changeStorage = function (storage) {
+    this.changeStorage = _.bind(function (storage) {
         this.storage = storage;
+        this.get = this.storage.get;
+        this.set = this.storage.set;
         $rootScope.$broadcast('storagechanged', this);
-    };
+    }, this);
 
     $rootScope.$on('authorized', _.bind(function () {
         var auth = $rootScope.authResponse;
@@ -114,9 +114,7 @@ todoApp.services.factory('persistance', ['$http', '$rootScope', function ($http,
         this.changeStorage(new ServerStorage($http, $rootScope, this.signature, this.onerror));
     }, this));
 
-    this.get = this.storage.get;
-    this.set = this.storage.set;
-
+    this.changeStorage(new StubStorage());
 
     return this;
 }]);
