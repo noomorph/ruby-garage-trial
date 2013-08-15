@@ -1,6 +1,6 @@
 .sass-cache
 logs/*
-app/app.css
 app/components
 node_modules/
 bower_components/
+*.swp

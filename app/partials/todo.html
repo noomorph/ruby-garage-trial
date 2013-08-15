@@ -20,7 +20,9 @@
     </div>
     <div class="todo-widget-add">
         <a href="javascript:void(0)" class="icon add"></a>
-        <input type="text" data-ng-model="list.add.text" placeholder="Start typing here to create a task" maxlength="70" />
+        <div class="input-placeholder">
+            <input type="text" data-ng-model="list.add.text" placeholder="Start typing here to create a task" maxlength="70" />
+        </div>
         <button name="add-task" type="submit" class="btn add-on btn-success" data-ng-disabled="!list.add.text" data-ng-click="list.add.do()">Add Task</button>
     </div>
     <table class="todo-widget-list">

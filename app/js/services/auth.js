@@ -4,11 +4,11 @@
 
 'use strict';
 
-todoApp.services.factory('auth', ['$rootScope', function ($rootScope) {
+todoApp.services.service('auth', ['$rootScope', function ($rootScope) {
         var me = this;
 
-        this.watchLoginChange = function() {
-            var callback = function(response) {
+        this.watchLoginChange = _.bind(function() {
+            var callback = _.bind(function(response) {
                 if (response.status === 'connected') {
                     $rootScope.authResponse = response.authResponse;
                     me.getUserInfo(function () {
@@ -18,14 +18,14 @@ todoApp.services.factory('auth', ['$rootScope', function ($rootScope) {
                 } 
                 else {
                     $("[data-ng-view]").show();
-                    $("#login").modal();
+                    $("#login").modal({ keyboard: true });
                 }
-            };
+            }, this);
             FB.Event.subscribe('auth.authResponseChange', callback);
             FB.getLoginStatus(callback);
-        };
+        }, this);
 
-        this.getUserInfo = function(callback) {
+        this.getUserInfo = _.bind(function(callback) {
             FB.api('/me', function(response) {
                 $rootScope.$apply(function() { 
                     $rootScope.user = me.user = response; 
@@ -33,15 +33,15 @@ todoApp.services.factory('auth', ['$rootScope', function ($rootScope) {
                     if (callback) { callback(); }
                 });
             });
-        };
+        }, this);
 
-        this.logout = function() {
+        this.logout = _.bind(function() {
             FB.logout(function(response) {
                 $rootScope.$apply(function() { 
                     $rootScope.user = me.user = null;
                 });	
             });
-        };
+        }, this);
 
         return this;
     }]);
